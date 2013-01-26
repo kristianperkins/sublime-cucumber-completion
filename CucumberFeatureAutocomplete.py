@@ -67,7 +67,7 @@ class GherkinFeatureAutocomplete(sublime_plugin.EventListener):
                         yield f, file_name
 
     def create_completion_text(self, completion, fields):
-        params = [x for x in re.split(',', fields.replace('|', ''))]
+        params = [x for x in re.split(',', fields.replace('|', '').replace('$', '$$'))]
         field_chunks = [re.split(' ', x)[-1] for x in params]
         # print "completions %s, fields %s" % (completion, fields)
         try:
