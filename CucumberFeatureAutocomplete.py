@@ -1,7 +1,7 @@
 import sublime, sublime_plugin, re, os
 
 step_def_urls = []
-ruby_regexp = re.compile(r'[/"](.*)\$?[/"] do(.*)')
+ruby_regexp = re.compile(r'[/"]\^?(.*?)\$?[/"] do(.*)')
 groovy_regexp = re.compile(r"[/']\^?(.*?)\$?[/']\) \{ (.*) ->")
 step_def_regexps = {'groovy': groovy_regexp, 'rb': ruby_regexp}
 
