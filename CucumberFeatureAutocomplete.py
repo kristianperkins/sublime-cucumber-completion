@@ -2,7 +2,7 @@ import sublime, sublime_plugin, re, os
 
 step_def_urls = []
 ruby_regexp = re.compile(r'[/"]\^?(.*?)\$?[/"] do(.*)')
-groovy_regexp = re.compile(r"[/']\^?(.*?)\$?[/']\) \{ (.*) ->")
+groovy_regexp = re.compile(r"[/'\"]\^?(.*?)\$?[/'\"]\) \{ (.*?) ?->")
 step_def_regexps = {'groovy': groovy_regexp, 'rb': ruby_regexp}
 
 background_completion = ("Background template", """Feature: $1<enter feature title>
@@ -30,7 +30,7 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
         line = view.substr(sublime.Region(view.line(locations[0]).a, locations[0]))
         if (not line.strip()):
             indent = self.calculate_step_indent(view, locations[0])
-            padding = " " * indent - len(line)
+            padding = " " * (indent - len(line))
             completions = [background_completion, scenario_completion] if locations[0] < 20 else [scenario_completion]
             completions += [(when, padding + when + " ") for when in whens]
             return completions
