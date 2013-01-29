@@ -1,9 +1,10 @@
-import sublime, sublime_plugin, re, os
+import sublime, sublime_plugin, re, os, logging
 
 step_def_urls = []
 ruby_regexp = re.compile(r'[/"]\^?(.*?)\$?[/"] do(.*)')
 groovy_regexp = re.compile(r"[/'\"]\^?(.*?)\$?[/'\"]\) \{ (.*?) ?->")
 step_def_regexps = {'groovy': groovy_regexp, 'rb': ruby_regexp}
+log = logging.getLogger("CucumberFeatureAutocomplete")
 
 background_completion = ("Background template", """Feature: $1<enter feature title>
     In order $2...
@@ -37,7 +38,6 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
         else:
             regex_and_params = self.find_step_defs(view.window().folders())
             regex_and_params = sorted(regex_and_params, key=lambda tup: tup[0])
-            print regex_and_params
             step_completions = [self.create_completion_text(*completion) for completion in regex_and_params]
             completions = [(c, c) for c in step_completions] + [sublime.INHIBIT_WORD_COMPLETIONS | sublime.INHIBIT_EXPLICIT_COMPLETIONS]
             return completions
@@ -62,31 +62,27 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
                 if step_file_name.endswith(key):
                     step_def_regexp = step_def_regexps.get(key)
                     for line in step_file:
-                        # print(line)
                         m = step_def_regexp.search(line)
                         if m:
                             step_matches.append(m.groups())
-                            print "appending: ", m.groups()
         return step_matches
 
     def find_step_files(self, base_folders):
         for base in base_folders:
             for (path, dirs, files) in os.walk(base):
                 step_files = [f for f in files if any(f.lower().endswith(file_suffix) for file_suffix in ['steps.groovy', 'steps.rb'])]
-                # print step_files
                 for file_name in step_files:
-                    print "found: " + file_name
+                    log.debug("found: " + file_name)
                     with open(os.path.join(path, file_name)) as f:
                         yield f, file_name
 
     def create_completion_text(self, completion, fields):
         params = [x for x in re.split(',', fields.replace('|', '').replace('$', '$$'))]
         field_chunks = [re.split(' ', x)[-1] for x in params]
-        # print "completions %s, fields %s" % (completion, fields)
         try:
             return '%s'.join(self.unbraced_chunks(completion)) % tuple(field_chunks)
         except:
-            print "failed completion: %s fields: %s" % (completion, fields)
+            log.debug("failed completion: %s fields: %s" % (completion, fields))
             return completion
 
     def unbraced_chunks(self, txt):
