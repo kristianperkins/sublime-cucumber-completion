@@ -20,7 +20,7 @@ scenario_completion = ("Scenario template", """Scenario: $1<enter scenario title
 
 whens = ['Given', 'When', 'Then', 'And', 'But', '*']
 
-class GherkinFeatureAutocomplete(sublime_plugin.EventListener):
+class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
     def on_query_completions(self, view, prefix, locations):
         # Only trigger within feature files
         file_name = view.file_name()
@@ -29,8 +29,8 @@ class GherkinFeatureAutocomplete(sublime_plugin.EventListener):
             return []
         line = view.substr(sublime.Region(view.line(locations[0]).a, locations[0]))
         if (not line.strip()):
-            pad_len = 8 - len(line)
-            padding = "".join([" " for x in range(pad_len)]) if pad_len > 0 else ""
+            indent = self.calculate_step_indent(view, locations[0])
+            padding = " " * indent - len(line)
             completions = [background_completion, scenario_completion] if locations[0] < 20 else [scenario_completion]
             completions += [(when, padding + when + " ") for when in whens]
             return completions
@@ -41,6 +41,19 @@ class GherkinFeatureAutocomplete(sublime_plugin.EventListener):
             step_completions = [self.create_completion_text(*completion) for completion in regex_and_params]
             completions = [(c, c) for c in step_completions] + [sublime.INHIBIT_WORD_COMPLETIONS | sublime.INHIBIT_EXPLICIT_COMPLETIONS]
             return completions
+
+    def calculate_step_indent(self, view, location):
+        """Search for step indent to use for the current file
+
+        Search lines from the cursor position back to the start of the file
+        to determine the indent to use.
+        """
+        regions = view.lines(sublime.Region(0, location))[::-1]
+        for region in regions:
+            line = view.substr(region)
+            if any([line.strip().startswith(when) for when in whens]):
+                return len(line) - len(line.lstrip())
+        return 8 # default
 
     def find_step_defs(self, base_folders):
         step_matches = []
