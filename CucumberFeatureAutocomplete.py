@@ -26,7 +26,7 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
         # Only trigger within feature files
         file_name = view.file_name()
         if (not file_name): file_name = ''
-        if (view.score_selector(0, 'text.gherkin.feature') == 0) and (not file_name.endswith('.feature')):
+        if view.score_selector(0, 'text.gherkin.feature') == 0 and not file_name.endswith('.feature'):
             return []
         line = view.substr(sublime.Region(view.line(locations[0]).a, locations[0]))
         if (not line.strip()):
