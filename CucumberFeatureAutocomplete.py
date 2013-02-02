@@ -28,10 +28,12 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
         if (not file_name): file_name = ''
         if view.score_selector(0, 'text.gherkin.feature') == 0 and not file_name.endswith('.feature'):
             return []
-        line = view.substr(sublime.Region(view.line(locations[0]).a, locations[0]))
+        line = view.substr(sublime.Region(view.line(locations[0]).a, view.word(locations[0]).begin()))
+        line_len = view.line(locations[0]).b - view.line(locations[0]).a
         if (not line.strip()):
             indent = self.calculate_step_indent(view, locations[0])
-            padding = " " * (indent - len(line))
+            log.debug("indent: %s len: %s line_len: %s" % (indent, len(line), line_len))
+            padding = " " * (indent - line_len)
             completions = [background_completion, scenario_completion] if locations[0] < 20 else [scenario_completion]
             completions += [(when, padding + when + " ") for when in whens]
             return completions
