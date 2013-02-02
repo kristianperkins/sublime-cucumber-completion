@@ -4,7 +4,7 @@ step_def_urls = []
 ruby_regexp = re.compile(r'[/"]\^?(.*?)\$?[/"] do(.*)')
 groovy_regexp = re.compile(r"[/'\"]\^?(.*?)\$?[/'\"]\) \{ (.*?) ?->")
 step_def_regexps = {'groovy': groovy_regexp, 'rb': ruby_regexp}
-log = logging.getLogger("CucumberFeatureAutocomplete")
+log = logging.getLogger(__name__)
 
 background_completion = ("Background template", """Feature: $1<enter feature title>
     In order $2...
