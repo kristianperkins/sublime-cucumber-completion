@@ -1,4 +1,7 @@
-import sublime, sublime_plugin, re, os, logging
+import re, os, logging
+from itertools import izip_longest
+
+import sublime, sublime_plugin
 
 step_def_urls = []
 ruby_regexp = re.compile(r'[/"]\^?(.*?)\$?[/"] do(.*)')
@@ -43,6 +46,8 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
             return completions
 
     def find_completions(self, base_folders):
+        """Find possible completions from the given base folders
+        """
         regex_and_params = self.find_step_defs(base_folders)
         regex_and_params = sorted(regex_and_params, key=lambda tup: tup[0])
         return [self.create_completion_text(*completion) for completion in regex_and_params]
@@ -82,15 +87,22 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
                         yield f, file_name
 
     def create_completion_text(self, completion, fields):
+        """Create human readable text from the step regular expression
+
+        Take the step regex, and the parameter names for the step and zip them together
+        """
         params = [x for x in re.split(',', fields.replace('|', '').replace('$', '$$'))]
         field_chunks = [re.split(' ', x)[-1] for x in params]
         try:
-            return '%s'.join(self.unbraced_chunks(completion)) % tuple(field_chunks)
+            zipped = izip_longest(self.unbraced_chunks(completion), field_chunks, fillvalue="")
+            return "".join(map("".join, zipped))
         except:
-            log.debug("failed completion: {0} fields: {0}".format(completion, fields))
+            log.exception("failed completion: {0} fields: {0}".format(completion, fields))
             return completion
 
     def unbraced_chunks(self, txt):
+        """Split regex into list around the capturing groups
+        """
         chunk = ''
         depth = 0
         for char in txt:
