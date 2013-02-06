@@ -32,7 +32,7 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
         line_len = view.line(locations[0]).b - view.line(locations[0]).a
         if (not line.strip()):
             indent = self.calculate_step_indent(view, locations[0])
-            log.debug("indent: %s len: %s line_len: %s" % (indent, len(line), line_len))
+            log.debug("indent: {0} len: {1} line_len: {2}".format(indent, len(line), line_len))
             padding = " " * (indent - line_len)
             completions = [background_completion, scenario_completion] if locations[0] < 20 else [scenario_completion]
             completions += [(when, padding + when + " ") for when in whens]
@@ -87,7 +87,7 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
         try:
             return '%s'.join(self.unbraced_chunks(completion)) % tuple(field_chunks)
         except:
-            log.debug("failed completion: %s fields: %s" % (completion, fields))
+            log.debug("failed completion: {0} fields: {0}".format(completion, fields))
             return completion
 
     def unbraced_chunks(self, txt):
