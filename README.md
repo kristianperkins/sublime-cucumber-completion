@@ -10,14 +10,15 @@ While inside the Sublime Packages directory, clone the theme repository using:
 
     git clone https://github.com/krockode/cucumber-completion
 
-
 Supported Step Definition Formats
 ---------------------------------
 
 Step definitions can be defined in many languages as the cucumber gherkin
-language is parsable in various programming languages.
+language is parsable in various programming languages.  The `examples`
+directory contains cucumber step files in different supported formats
+which are tested against.
 
-Autocompletion has been tested and works for the examples found in:
+Specifically this has been tested and works for the examples found in:
 * [cucumber/cucumber][1] with the exception of the following:
     * i18n - languages other than the English are not supported yet
     * python - steps defined in python are not suppoerted yet
@@ -31,7 +32,6 @@ TODO
 ----
 
 * Support more languages
-* Tests defining supported step definition formats
 
 [1]: https://github.com/cucumber/cucumber
 [2]: https://github.com/cucumber/cucumber-jvm
