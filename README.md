@@ -16,9 +16,10 @@ Supported Step Definition Formats
 ---------------------------------
 
 Step definitions can be defined in many languages as the cucumber gherkin
-language is parsable in various programming languages.  The `examples`
+language is parsable in various programming languages.  The [examples](examples)
 directory contains cucumber step files in different supported formats
-which are tested against.
+which are tested against.  The `*.expected` files show the completions that will
+be generated for sublime projects of these directories.
 
 Specifically this has been tested and works for the examples found in:
 * [cucumber/cucumber][1] with the exception of the following:
