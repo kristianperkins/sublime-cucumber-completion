@@ -38,9 +38,6 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
             completions += [(when, padding + when + " ") for when in whens]
             return completions
         else:
-            # regex_and_params = self.find_step_defs(view.window().folders())
-            # regex_and_params = sorted(regex_and_params, key=lambda tup: tup[0])
-            # step_completions = [self.create_completion_text(*completion) for completion in regex_and_params]
             step_completions = self.find_completions(view.window().folders())
             completions = [(c, c) for c in step_completions] + [sublime.INHIBIT_WORD_COMPLETIONS | sublime.INHIBIT_EXPLICIT_COMPLETIONS]
             return completions
