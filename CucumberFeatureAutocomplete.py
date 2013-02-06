@@ -1,7 +1,11 @@
 import re, os, logging
-from itertools import izip_longest
 
 import sublime, sublime_plugin
+
+try:
+    from itertools import izip_longest as zip_longest
+except:
+    from itertools import zip_longest
 
 step_def_urls = []
 ruby_regexp = re.compile(r'[/"]\^?(.*?)\$?[/"] do(.*)')
@@ -94,7 +98,7 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
         params = [x for x in re.split(',', fields.replace('|', '').replace('$', '$$'))]
         field_chunks = [re.split(' ', x)[-1] for x in params]
         try:
-            zipped = izip_longest(self.unbraced_chunks(completion), field_chunks, fillvalue="")
+            zipped = zip_longest(self.unbraced_chunks(completion), field_chunks, fillvalue="")
             return "".join(map("".join, zipped))
         except:
             log.exception("failed completion: {0} fields: {0}".format(completion, fields))
