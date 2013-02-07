@@ -1,7 +1,7 @@
 Cucumber Completion
 ===================
 
-[![Build Status](https://travis-ci.org/krockode/cucumber-completion.png?branch=master)](https://travis-ci.org/krockode/cucumber-completion)
+[![Build Status](https://travis-ci.org/krockode/sublime-cucumber-completion.png?branch=master)](https://travis-ci.org/krockode/sublime-cucumber-completion)
 
 Sublime plugin to auto complete Cucumber step definitions.
 
@@ -40,3 +40,4 @@ TODO
 [1]: http://docs.sublimetext.info/en/latest/basic_concepts.html#the-data-directory
 [2]: https://github.com/cucumber/cucumber
 [3]: https://github.com/cucumber/cucumber-jvm
+
