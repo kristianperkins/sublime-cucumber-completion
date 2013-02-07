@@ -1,10 +1,17 @@
-import sublime, sublime_plugin, re, os, logging
+import re, os, logging
+
+import sublime, sublime_plugin
+
+try:
+    from itertools import izip_longest as zip_longest
+except:
+    from itertools import zip_longest
 
 step_def_urls = []
 ruby_regexp = re.compile(r'[/"]\^?(.*?)\$?[/"] do(.*)')
 groovy_regexp = re.compile(r"[/'\"]\^?(.*?)\$?[/'\"]\) \{ (.*?) ?->")
 step_def_regexps = {'groovy': groovy_regexp, 'rb': ruby_regexp}
-log = logging.getLogger("CucumberFeatureAutocomplete")
+log = logging.getLogger(__name__)
 
 background_completion = ("Background template", """Feature: $1<enter feature title>
     In order $2...
@@ -26,21 +33,28 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
         # Only trigger within feature files
         file_name = view.file_name()
         if (not file_name): file_name = ''
-        if (view.score_selector(0, 'text.gherkin.feature') == 0) and (not file_name.endswith('.feature')):
+        if view.score_selector(0, 'text.gherkin.feature') == 0 and not file_name.endswith('.feature'):
             return []
-        line = view.substr(sublime.Region(view.line(locations[0]).a, locations[0]))
+        line = view.substr(sublime.Region(view.line(locations[0]).a, view.word(locations[0]).begin()))
+        line_len = view.line(locations[0]).b - view.line(locations[0]).a
         if (not line.strip()):
             indent = self.calculate_step_indent(view, locations[0])
-            padding = " " * (indent - len(line))
+            log.debug("indent: {0} len: {1} line_len: {2}".format(indent, len(line), line_len))
+            padding = " " * (indent - line_len)
             completions = [background_completion, scenario_completion] if locations[0] < 20 else [scenario_completion]
             completions += [(when, padding + when + " ") for when in whens]
             return completions
         else:
-            regex_and_params = self.find_step_defs(view.window().folders())
-            regex_and_params = sorted(regex_and_params, key=lambda tup: tup[0])
-            step_completions = [self.create_completion_text(*completion) for completion in regex_and_params]
+            step_completions = self.find_completions(view.window().folders())
             completions = [(c, c) for c in step_completions] + [sublime.INHIBIT_WORD_COMPLETIONS | sublime.INHIBIT_EXPLICIT_COMPLETIONS]
             return completions
+
+    def find_completions(self, base_folders):
+        """Find possible completions from the given base folders
+        """
+        regex_and_params = self.find_step_defs(base_folders)
+        regex_and_params = sorted(regex_and_params, key=lambda tup: tup[0])
+        return [self.create_completion_text(*completion) for completion in regex_and_params]
 
     def calculate_step_indent(self, view, location):
         """Search for step indent to use for the current file
@@ -77,15 +91,22 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
                         yield f, file_name
 
     def create_completion_text(self, completion, fields):
+        """Create human readable text from the step regular expression
+
+        Take the step regex, and the parameter names for the step and zip them together
+        """
         params = [x for x in re.split(',', fields.replace('|', '').replace('$', '$$'))]
         field_chunks = [re.split(' ', x)[-1] for x in params]
         try:
-            return '%s'.join(self.unbraced_chunks(completion)) % tuple(field_chunks)
+            zipped = zip_longest(self.unbraced_chunks(completion), field_chunks, fillvalue="")
+            return "".join(map("".join, zipped))
         except:
-            log.debug("failed completion: %s fields: %s" % (completion, fields))
+            log.exception("failed completion: {0} fields: {0}".format(completion, fields))
             return completion
 
     def unbraced_chunks(self, txt):
+        """Split regex into list around the capturing groups
+        """
         chunk = ''
         depth = 0
         for char in txt:
