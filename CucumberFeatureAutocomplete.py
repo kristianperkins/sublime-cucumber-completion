@@ -101,7 +101,7 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
             zipped = zip_longest(self.unbraced_chunks(completion), field_chunks, fillvalue="")
             return "".join(map("".join, zipped))
         except:
-            log.exception("failed completion: {0} fields: {0}".format(completion, fields))
+            log.exception("failed completion: {0} fields: {1}".format(completion, fields))
             return completion
 
     def unbraced_chunks(self, txt):
