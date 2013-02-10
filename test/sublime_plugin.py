@@ -1,20 +1,21 @@
 # sublime api mocking taken from https://github.com/SublimeText/Modelines
+
+
 class Plugin(object):
-   pass
+    pass
 
 
 class ApplicationCommand(Plugin):
-   pass
+    pass
 
 
 class WindowCommand(Plugin):
-   pass
+    pass
 
 
 class TextCommand(Plugin):
-   pass
+    pass
 
 
 class EventListener(Plugin):
     pass
-

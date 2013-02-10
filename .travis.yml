@@ -6,4 +6,4 @@ install:
   - pip install coverage pep8 --use-mirrors
 script:
   - nosetests --with-coverage
-  - pep8 *.py && echo 'PEP8 passed' || echo 'PEP8 failed'
+  - pep8 *.py test && echo 'PEP8 passed' || echo 'PEP8 failed'
