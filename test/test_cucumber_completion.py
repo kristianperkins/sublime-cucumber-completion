@@ -22,3 +22,21 @@ def check_examples(d):
     expected = set(open('{0}.expected'.format(test_dir)).read().splitlines())
     found = set(completer.find_completions([test_dir]))
     assert expected == found, message.format(d, "', '".join(found))
+
+
+def test_splitting_regex_by_no_groups():
+    assert list(completer.unbraced_chunks("no groups")) == ["no groups"]
+
+
+def test_splitting_regex_by_groups():
+    chunks = list(completer.unbraced_chunks('The customers name is (.*)'))
+    assert ['The customers name is ', ''] == chunks
+    chunks = list(completer.unbraced_chunks('Mrs (.*) is a customer'))
+    assert ['Mrs ', ' is a customer'] == chunks
+    chunks = list(completer.unbraced_chunks('(Mr|Mrs|Ms) (.*) is a customer'))
+    assert ['', ' ', ' is a customer'] == chunks
+
+
+def test_splitting_regex_ignores_inner_braces():
+    chunks = list(completer.unbraced_chunks('More (braces (arent)) groups'))
+    assert ['More ', ' groups'] == chunks
