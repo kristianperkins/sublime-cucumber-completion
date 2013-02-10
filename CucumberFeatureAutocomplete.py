@@ -38,7 +38,6 @@ whens = ['Given', 'When', 'Then', 'And', 'But', '*']
 
 class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
     def on_query_completions(self, view, prefix, locations):
-        print 'hi'
         # Only trigger within feature files
         file_name = view.file_name()
         if (not file_name):
