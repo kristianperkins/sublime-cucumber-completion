@@ -18,8 +18,9 @@ step_def_regexps = {'groovy': groovy_regexp, 'rb': ruby_regexp}
 suffixes = ['steps.{0}'.format(k) for k in step_def_regexps.keys()]
 log = logging.getLogger(__name__)
 
-background_completion = ("Background template",
-"""Feature: $1<enter feature title>
+background_completion = (
+    "Background template",
+    """Feature: $1<enter feature title>
     In order $2...
     As a ...
     I want
@@ -29,8 +30,9 @@ background_completion = ("Background template",
 
     Scenario: $5<enter scenario title>
         When $6""")
-scenario_completion = ("Scenario template",
-"""Scenario: $1<enter scenario title>
+scenario_completion = (
+    "Scenario template",
+    """Scenario: $1<enter scenario title>
     When $2""")
 
 whens = ['Given', 'When', 'Then', 'And', 'But', '*']
@@ -43,7 +45,7 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
         if (not file_name):
             file_name = ''
         if (view.score_selector(0, 'text.gherkin.feature') == 0 and
-          not file_name.endswith('.feature')):
+                not file_name.endswith('.feature')):
             return []
         line = view.substr(sublime.Region(view.line(locations[0]).a,
                            view.word(locations[0]).begin()))
@@ -51,7 +53,7 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
         if (not line.strip()):
             indent = self.calculate_step_indent(view, locations[0])
             log.debug("indent: {0} len: {1} line_len: {2}".format(
-              indent, len(line), line_len))
+                      indent, len(line), line_len))
             padding = " " * (indent - line_len)
             completions = None
             if locations[0] < 20:
@@ -121,13 +123,13 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
         field_chunks = [re.split(' ', x)[-1] for x in params]
         try:
             zipped = zip_longest(
-              self.unbraced_chunks(completion),
-              field_chunks,
-              fillvalue="")
+                self.unbraced_chunks(completion),
+                field_chunks,
+                fillvalue="")
             return "".join(map("".join, zipped))
         except:
             log.exception("failed completion: {0} fields: {1}".format(
-              completion, fields))
+                completion, fields))
             return completion
 
     def unbraced_chunks(self, txt):
