@@ -38,7 +38,12 @@ Specifically this has been tested and works for the examples found in:
 * groovy examples in [cucumber/cucumber-jvm][3]
 
 Support for steps defined in different language types is planned including
-python, javascript as well as Java and other JVM based languages.
+python, javascript as well as Java and other JVM based languages. 
+
+There are many formats so if you would like a specific flavour implemented
+please submit an issue for your flavour and/or a pull request with
+[an example in the examples directory](examples) of your step definition format.
+
 
 TODO
 ----
