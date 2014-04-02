@@ -2,6 +2,8 @@ Cucumber Completion
 ===================
 
 [![Build Status](https://travis-ci.org/krockode/sublime-cucumber-completion.png?branch=master)](https://travis-ci.org/krockode/sublime-cucumber-completion)
+[![Coverage
+Status](https://coveralls.io/repos/krockode/sublime-cucumber-completion/badge.png?branch=master)](https://coveralls.io/r/krockode/sublime-cucumber-completion?branch=master)
 
 Sublime plugin to auto complete Cucumber step definitions.
 
