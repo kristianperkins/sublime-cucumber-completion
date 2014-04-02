@@ -2,5 +2,8 @@ language: python
 python:
   - "2.6"  # sublime text 2
   - "3.3"  # sublime text 3
-script: nosetests
-
+install:
+  - pip install coverage pep8 --use-mirrors
+script:
+  - nosetests --with-coverage
+  - pep8 *.py test && echo 'PEP8 passed' || echo 'PEP8 failed'
