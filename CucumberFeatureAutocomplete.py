@@ -12,7 +12,7 @@ except:
 
 thing = ''
 step_def_urls = []
-ruby_regexp = re.compile(r'[/"]\^?\(?(.*?)\$?[/"]\)? do(.*)')
+ruby_regexp = re.compile(r'[/"]\(?\^?(.*?)\$?[/"]\)? do(.*)')
 groovy_regexp = re.compile(r"[/'\"]\^?(.*?)\$?[/'\"]\) \{ (.*?) ?->")
 step_def_regexps = {'groovy': groovy_regexp, 'rb': ruby_regexp}
 suffixes = ['steps.{0}'.format(k) for k in step_def_regexps.keys()]
