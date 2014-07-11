@@ -16,7 +16,6 @@ ruby_regexp = re.compile(r'[/"]\^?\(?(.*?)\$?[/"]\)? do(.*)')
 groovy_regexp = re.compile(r"[/'\"]\^?(.*?)\$?[/'\"]\) \{ (.*?) ?->")
 step_def_regexps = {'groovy': groovy_regexp, 'rb': ruby_regexp}
 suffixes = ['steps.{0}'.format(k) for k in step_def_regexps.keys()]
-step_folder = 'step_definitions'
 step_folders = []
 log = logging.getLogger(__name__)
 
@@ -112,14 +111,13 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
     def find_step_files(self, base_folders):
         for base in base_folders:
             for (path, dirs, files) in os.walk(base):
-                if (path.endswith(step_folder)):
-                    if not (path in step_folders):
-                        step_folders.append(path)
-                    for file_name in files:
-                        if any(file_name.lower().endswith(s) for s in suffixes):
-                            log.debug("found: " + file_name)
-                            with open(os.path.join(path, file_name)) as f:
-                                yield f, file_name
+                for file_name in files:
+                    if any(file_name.lower().endswith(s) for s in suffixes):
+                        if not (path in step_folders):
+                            step_folders.append(path)
+                        log.debug("found: " + file_name)
+                        with open(os.path.join(path, file_name)) as f:
+                            yield f, file_name
 
     def create_completion_text(self, completion, fields):
         """Create human readable text from the step regular expression
@@ -160,3 +158,13 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
             elif depth == 0:
                 chunk = chunk + char
         yield chunk
+
+
+class CucumberCompletionResetStepFoldersCommand(sublime_plugin.WindowCommand):
+    
+    def __init__(self, window):
+        sublime_plugin.WindowCommand.__init__(self, window)
+
+    def run(self):
+        global step_folders
+        step_folders = []
