@@ -12,10 +12,11 @@ except:
 
 thing = ''
 step_def_urls = []
-ruby_regexp = re.compile(r'[/"]\^?(.*?)\$?[/"] do(.*)')
+ruby_regexp = re.compile(r'[/"]\(?\^?(.*?)\$?[/"]\)? do(.*)')
 groovy_regexp = re.compile(r"[/'\"]\^?(.*?)\$?[/'\"]\) \{ (.*?) ?->")
 step_def_regexps = {'groovy': groovy_regexp, 'rb': ruby_regexp}
 suffixes = ['steps.{0}'.format(k) for k in step_def_regexps.keys()]
+step_folders = []
 log = logging.getLogger(__name__)
 
 background_completion = (
@@ -41,6 +42,7 @@ whens = ['Given', 'When', 'Then', 'And', 'But', '*']
 class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
     def on_query_completions(self, view, prefix, locations):
         # Only trigger within feature files
+
         file_name = view.file_name()
         if (not file_name):
             file_name = ''
@@ -66,8 +68,11 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
             completion_flags = [
                 sublime.INHIBIT_WORD_COMPLETIONS |
                 sublime.INHIBIT_EXPLICIT_COMPLETIONS]
-            step_completions = self.find_completions(view.window().folders())
-            completions = [(c, c) for c in step_completions] + completion_flags
+            if not step_folders:
+                step_completions = self.find_completions(view.window().folders())
+            else:
+                step_completions = self.find_completions(step_folders)
+            completions = [(c, c) for c in step_completions]# + completion_flags
             return completions
 
     def find_completions(self, base_folders):
@@ -108,6 +113,8 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
             for (path, dirs, files) in os.walk(base):
                 for file_name in files:
                     if any(file_name.lower().endswith(s) for s in suffixes):
+                        if not (path in step_folders):
+                            step_folders.append(path)
                         log.debug("found: " + file_name)
                         with open(os.path.join(path, file_name)) as f:
                             yield f, file_name
@@ -137,14 +144,27 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
         """
         chunk = ''
         depth = 0
-        for char in txt:
+        for idx, char in enumerate(txt):
             if char == '(':
-                if depth == 0:
-                    yield chunk
-                    chunk = ''
-                depth = depth + 1
+                if (txt[idx+1] != '?' and txt[idx+2] != ':'):
+                    if depth == 0:
+                        yield chunk
+                        chunk = ''
+                    depth = depth + 1
+                else:
+                    chunk = chunk + char
             elif char == ')' and depth > 0:
                 depth = depth - 1
             elif depth == 0:
                 chunk = chunk + char
         yield chunk
+
+
+class CucumberCompletionResetStepFoldersCommand(sublime_plugin.WindowCommand):
+    
+    def __init__(self, window):
+        sublime_plugin.WindowCommand.__init__(self, window)
+
+    def run(self):
+        global step_folders
+        step_folders = []

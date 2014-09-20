@@ -1,0 +1,3 @@
+[
+  { "keys": ["ctrl+shift+f5"], "command": "cucumber_completion_reset_step_folders" }
+]

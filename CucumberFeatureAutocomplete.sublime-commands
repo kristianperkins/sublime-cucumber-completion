@@ -1,0 +1,3 @@
+[
+	{ "command" : "cucumber_completion_reset_step_folders", "caption": "Cucumber Completion: Reset cached step folders" }
+]
