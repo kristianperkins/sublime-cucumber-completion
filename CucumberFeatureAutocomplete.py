@@ -65,14 +65,11 @@ class CucumberFeatureAutocomplete(sublime_plugin.EventListener):
             completions += [(when, padding + when + " ") for when in whens]
             return completions
         else:
-            completion_flags = [
-                sublime.INHIBIT_WORD_COMPLETIONS |
-                sublime.INHIBIT_EXPLICIT_COMPLETIONS]
             if not step_folders:
                 step_completions = self.find_completions(view.window().folders())
             else:
                 step_completions = self.find_completions(step_folders)
-            completions = [(c, c) for c in step_completions]# + completion_flags
+            completions = [(c, c) for c in step_completions]
             return completions
 
     def find_completions(self, base_folders):
