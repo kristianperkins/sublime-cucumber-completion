@@ -5,6 +5,8 @@ Cucumber Completion
 [![Coverage
 Status](https://coveralls.io/repos/krockode/sublime-cucumber-completion/badge.png?branch=master)](https://coveralls.io/r/krockode/sublime-cucumber-completion?branch=master)
 
+[Plugin Information][5] on [packagecontrol.io][4].
+
 Sublime plugin to auto complete Cucumber step definitions.
 
 Installation
@@ -55,4 +57,5 @@ TODO
 [1]: http://docs.sublimetext.info/en/latest/basic_concepts.html#the-data-directory
 [2]: https://github.com/cucumber/cucumber
 [3]: https://github.com/cucumber/cucumber-jvm
-[4]: http://wbond.net/sublime_packages/package_control
+[4]: https://packagecontrol.io
+[5]: https://packagecontrol.io/packages/Cucumber%20Completion
