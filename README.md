@@ -36,9 +36,9 @@ be generated for sublime projects of these directories.
 
 Specifically this has been tested and works for the examples found in:
 * [cucumber/cucumber][2] with the exception of the following:
-    * i18n - languages other than the English are not supported yet
-    * python - steps defined in python are not suppoerted yet
-    * v8 - steps defined in javascript are not supported yet
+    * i18n - languages other than the English are not supported
+    * python - steps defined in python are not suppoerted
+    * v8 - steps defined in javascript are not supported
 * groovy examples in [cucumber/cucumber-jvm][3]
 
 Support for steps defined in different language types is planned including
@@ -49,10 +49,12 @@ please submit an issue for your flavour and/or a pull request with
 [an example in the examples directory](examples) of your step definition format.
 
 
-TODO
-----
+More Languages
+--------------
 
-* Support more languages
+Cucumber is implemented in many languages and this plugin only supports a couple
+of implementations.  If you would like to see more languages supported, create
+an issue or submit a pull request.
 
 [1]: http://docs.sublimetext.info/en/latest/basic_concepts.html#the-data-directory
 [2]: https://github.com/cucumber/cucumber
